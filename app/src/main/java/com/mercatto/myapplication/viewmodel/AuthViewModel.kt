@@ -3,6 +3,7 @@ package com.mercatto.myapplication.viewmodel
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
 import com.mercatto.myapplication.data.model.User
 import com.mercatto.myapplication.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
-// Estados para el Login
 sealed class LoginUiState {
     object Idle    : LoginUiState()
     object Loading : LoginUiState()
@@ -18,7 +18,6 @@ sealed class LoginUiState {
     data class Error(val message: String) : LoginUiState()
 }
 
-// Estados para el Registro
 sealed class RegisterUiState {
     object Idle    : RegisterUiState()
     object Loading : RegisterUiState()
@@ -30,7 +29,6 @@ class AuthViewModel(
     private val repo: AuthRepository = AuthRepository()
 ) : ViewModel() {
 
-    // --- Login ---
     private val _loginState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
     val loginState: StateFlow<LoginUiState> = _loginState
 
@@ -53,7 +51,6 @@ class AuthViewModel(
         _loginState.value = LoginUiState.Idle
     }
 
-    // --- Registro ---
     private val _registerState = MutableStateFlow<RegisterUiState>(RegisterUiState.Idle)
     val registerState: StateFlow<RegisterUiState> = _registerState
 
@@ -69,7 +66,6 @@ class AuthViewModel(
         storeLocation: String?,
         storeImageUri: Uri?
     ) {
-        // Validaciones
         if (password != confirmPassword) {
             _registerState.value =
                 RegisterUiState.Error("Las contraseñas no coinciden")
@@ -110,5 +106,12 @@ class AuthViewModel(
 
     fun resetRegisterState() {
         _registerState.value = RegisterUiState.Idle
+    }
+
+    fun getCurrentUser(): FirebaseUser? =
+        repo.getCurrentUser()
+
+    fun signOut() {
+        repo.signOut()
     }
 }

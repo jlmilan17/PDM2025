@@ -2,6 +2,7 @@ package com.mercatto.myapplication.data.repository
 
 import android.net.Uri
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.mercatto.myapplication.data.model.User
@@ -28,15 +29,21 @@ class AuthRepository(
         storeImageUri: Uri?
     ): Result<Unit> {
         return try {
-            // 1) Crear usuario en Firebase Auth
             val authResult = auth
                 .createUserWithEmailAndPassword(user.email, password)
                 .await()
 
-            val uid = authResult.user?.uid
+            val firebaseUser = authResult.user
                 ?: throw IllegalStateException("UID de FirebaseAuth es null")
 
-            // 2) Subir imagen de la tienda si se proporcionó una URI
+            val uid = firebaseUser.uid
+
+            firebaseUser.updateProfile(
+                userProfileChangeRequest {
+                    displayName = user.fullName
+                }
+            ).await()
+
             val imageUrl = storeImageUri?.let { uri ->
                 val storageRef = storage.reference
                     .child("store_images/$uid.jpg")
@@ -44,7 +51,6 @@ class AuthRepository(
                 storageRef.downloadUrl.await().toString()
             }
 
-            // 3) Guardar datos del usuario en Firestore
             val userToSave = user.copy(
                 uid = uid,
                 storeImageUrl = imageUrl
@@ -57,8 +63,12 @@ class AuthRepository(
 
             Result.success(Unit)
         } catch (e: Exception) {
-            // Opcional: podrías eliminar el usuario de Auth si falla el paso 3
             Result.failure(e)
         }
     }
+    fun signOut() {
+        auth.signOut()
+    }
+
+    fun getCurrentUser() = auth.currentUser
 }

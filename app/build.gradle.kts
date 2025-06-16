@@ -44,13 +44,22 @@ android {
 dependencies {
     // 1) Firebase BoM
     implementation (platform("com.google.firebase:firebase-bom:32.3.1"))
-
     // 2) Firebase SDKs (sin versión explícita)
     implementation ("com.google.firebase:firebase-auth-ktx")
     implementation ("com.google.firebase:firebase-analytics-ktx")
     implementation ("com.google.firebase:firebase-firestore-ktx")
     implementation ("com.google.firebase:firebase-storage-ktx")
-
+    // Coil & icons
+    implementation("io.coil-kt.coil3:coil-compose:3.2.0")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.9.0")
+    // Retrofit + Gson
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // Para grids en Compose
+    implementation("androidx.compose.foundation:foundation:1.4.0")
+    implementation ("androidx.compose.material3:material3:1.1.0")
     // 3) Resto de tus dependencias
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -60,14 +69,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-
-    // Coil & icons
-    implementation("io.coil-kt.coil3:coil-compose:3.2.0")
-    implementation("androidx.compose.material:material-icons-extended:1.7.8")
-
-    // Navigation Compose
-    implementation("androidx.navigation:navigation-compose:2.9.0")
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
