@@ -1,88 +1,119 @@
 package com.mercatto.myapplication.ui.sell
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavController
-import com.mercatto.myapplication.viewmodel.ProductViewModel
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mercatto.myapplication.data.model.Product
+import androidx.navigation.NavController
+import com.mercatto.myapplication.viewmodel.ProductViewModel
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SellScreen(
     navController: NavController,
     viewModel: ProductViewModel
 ) {
     var productTitle by remember { mutableStateOf("") }
-    var productPrice by remember { mutableStateOf<Double>(0.0) }
+    var productPriceText by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf<String?>(null) }
+    var productDescription by remember { mutableStateOf("") }
 
-    Box(
+    val categories by viewModel.categories.collectAsState()
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-                .height(64.dp),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "Publicar artículo", modifier = Modifier.padding(vertical = 8.dp),
-                    fontSize = 32.sp
-                )
-            }
+        Text(
+            text = "Publicar artículo",
+            fontSize = 28.sp,
+            style = MaterialTheme.typography.headlineSmall
+        )
 
+        OutlinedTextField(
+            value = productTitle,
+            onValueChange = { productTitle = it },
+            label = { Text("Título") },
+            singleLine = true,
+            shape = RoundedCornerShape(24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+
+        OutlinedTextField(
+            value = productPriceText,
+            onValueChange = { productPriceText = it },
+            label = { Text("Precio") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
+            shape = RoundedCornerShape(24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+
+        var expanded by remember { mutableStateOf(false) }
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+            modifier = Modifier.fillMaxWidth()
+        ) {
             OutlinedTextField(
-                value = productTitle,
-                onValueChange = { productTitle = it },
-                placeholder = { "Título" },
+                value = selectedCategory ?: "",
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Categoría") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier
+                    .menuAnchor()
                     .fillMaxWidth()
-                    .height(52.dp)
             )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                categories.forEach { category ->
+                    DropdownMenuItem(
+                        text = { Text(category) },
+                        onClick = {
+                            selectedCategory = category
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
 
-//            OutlinedTextField(
-//                value = productPrice,
-//                onValueChange = { productPrice = it },
-//                placeholder = { "Precio" },
-//                shape = RoundedCornerShape(24.dp),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(52.dp)
-//            )
+        OutlinedTextField(
+            value = productDescription,
+            onValueChange = { productDescription = it },
+            label = { Text("Descripción") },
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(24.dp),
+            minLines = 3,
+            maxLines = Int.MAX_VALUE
+        )
 
-
-
+        Button(
+            onClick = {
+                val price = productPriceText.toDoubleOrNull() ?: 0.0
+                println("Publicar: $productTitle - $$price - categoría: $selectedCategory")
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Publicar producto")
         }
     }
 }
-
-//@Composable
-//fun PostProduct() {
-//
-//}

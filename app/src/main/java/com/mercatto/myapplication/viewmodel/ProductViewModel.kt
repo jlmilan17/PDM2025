@@ -16,6 +16,7 @@ class ProductViewModel(
     private val _categories    = MutableStateFlow<List<String>>(emptyList())
     private val _selectedCat   = MutableStateFlow<String?>(null)
     private val _searchQuery   = MutableStateFlow("")
+    private val _publishedList = MutableStateFlow<List<Product>>(emptyList())
 
     // 2) IDs de los productos marcados como favoritos
     // Empezamos con un Set vacío para evitar duplicados
@@ -34,6 +35,7 @@ class ProductViewModel(
     val categories: StateFlow<List<String>> = _categories
     val selectedCategory: StateFlow<String?> = _selectedCat
     val searchQuery: StateFlow<String> = _searchQuery
+    val publishedProducts: StateFlow<List<Product>> = _publishedList
 
     val filteredProducts: StateFlow<List<Product>> = combine(
         _allProducts,
@@ -70,5 +72,17 @@ class ProductViewModel(
 
     fun onSearchQueryChange(query: String) {
         _searchQuery.value = query
+    }
+
+    fun loadCategories() {
+        viewModelScope.launch {
+            _categories.value = repo.fetchCategories()
+        }
+    }
+
+    fun publishProduct(product: Product) {
+        val currentList = _publishedList.value.toMutableList()
+        currentList.add(product)
+        _publishedList.value = currentList
     }
 }
