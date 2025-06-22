@@ -68,9 +68,9 @@ fun HomeScreen(
                 items(products) { product ->
                     ProductCard(
                         product = product,
-                        onClick = {
-                            navController.navigate("detail/${product.id}")
-                        }
+                        isFavorite = viewModel.isFavorite(product.id),
+                        onToggleFavorite = { viewModel.toggleFavorite(product.id) },
+                        onClick = { navController.navigate("detail/${product.id}") }
                     )
                 }
             }
