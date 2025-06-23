@@ -105,7 +105,7 @@ fun AppNavGraph(
         }
         // “Favoritos”
         composable(Destinations.FAVORITES) {
-            FavoritesScreen(navController)
+            FavoritesScreen(navController, productViewModel)
         }
         // “Mensajes”
         composable(Destinations.MESSAGES) {

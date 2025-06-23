@@ -23,6 +23,7 @@ fun BottomNavBar(
         val items = listOf(
             Destinations.HOME   to (Icons.Filled.Home   to "Explorar"),
             Destinations.SELL   to (Icons.Filled.Label  to "Vender"),
+            Destinations.FAVORITES to (Icons.Filled.Label to "Favoritos"),
             Destinations.PROFILE to (Icons.Filled.Person to "Perfil")
         )
         items.forEach { (route, iconAndLabel) ->
