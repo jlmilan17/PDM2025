@@ -18,8 +18,8 @@ fun DetailScreen(
     entry: NavBackStackEntry,
     viewModel: ProductViewModel
 ) {
-    // Lee el id como entero, no como String
-    val productId = entry.arguments?.getInt("id") ?: return
+
+    val productId = entry.arguments?.getString("id") ?: return
 
     val product = viewModel.filteredProducts.value
         .firstOrNull { it.id == productId }

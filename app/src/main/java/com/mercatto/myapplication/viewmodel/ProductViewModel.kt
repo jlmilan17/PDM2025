@@ -54,8 +54,13 @@ class ProductViewModel(
     }
 
     fun publishProduct(product: Product) {
-        val currentList = _publishedList.value.toMutableList()
-        currentList.add(product)
-        _publishedList.value = currentList
+        viewModelScope.launch {
+            repo.addProductToFirestore(product)
+            val currentList = _publishedList.value.toMutableList()
+            currentList.add(product)
+            _publishedList.value = currentList
+        }
     }
+
+
 }

@@ -7,16 +7,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.mercatto.myapplication.data.model.Product
 import com.mercatto.myapplication.ui.components.StoreImageSelector
 import com.mercatto.myapplication.viewmodel.ProductViewModel
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,8 +32,11 @@ fun SellScreen(
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var productDescription by remember { mutableStateOf("") }
     var productImageUri by remember { mutableStateOf<Uri?>(null) }
-
     val categories by viewModel.categories.collectAsState()
+    var expanded by remember { mutableStateOf(false) }
+
+    val db = FirebaseFirestore.getInstance()
+    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "unknown-user"
 
     Scaffold(
         topBar = {
@@ -48,13 +54,10 @@ fun SellScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .padding(padding).padding(20.dp),
+                .padding(padding)
+                .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Spacer(
-                modifier = Modifier.height(16.dp)
-            )
-
             StoreImageSelector(
                 storeImageUri = productImageUri,
                 onImageSelected = { productImageUri = it },
@@ -67,8 +70,7 @@ fun SellScreen(
                 label = { Text("Título") },
                 singleLine = true,
                 shape = RoundedCornerShape(24.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
@@ -76,13 +78,10 @@ fun SellScreen(
                 onValueChange = { productPriceText = it },
                 label = { Text("Precio") },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                 shape = RoundedCornerShape(24.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
-
-            var expanded by remember { mutableStateOf(false) }
 
             ExposedDropdownMenuBox(
                 expanded = expanded,
@@ -120,8 +119,7 @@ fun SellScreen(
                 value = productDescription,
                 onValueChange = { productDescription = it },
                 label = { Text("Descripción") },
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(24.dp),
                 minLines = 3,
                 maxLines = Int.MAX_VALUE
@@ -130,7 +128,29 @@ fun SellScreen(
             Button(
                 onClick = {
                     val price = productPriceText.toDoubleOrNull() ?: 0.0
-                    println("Publicar: $productTitle - $$price - categoría: $selectedCategory")
+                    val newProduct = Product(
+                        id = UUID.randomUUID().toString(),
+                        title = productTitle,
+                        price = price,
+                        description = productDescription,
+                        category = selectedCategory ?: "Sin categoría",
+                        image = productImageUri?.toString() ?: ""
+//                        ownerId = userId
+                    )
+
+                    // Guardar en Firestore
+                    db.collection("products")
+                        .document(newProduct.id)
+                        .set(newProduct)
+                        .addOnSuccessListener {
+                            println("Producto publicado exitosamente")
+                            viewModel.publishProduct(newProduct)
+                            navController.popBackStack()
+                        }
+                        .addOnFailureListener {
+                            println("Error al publicar el producto: ${it.message}")
+                        }
+
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
