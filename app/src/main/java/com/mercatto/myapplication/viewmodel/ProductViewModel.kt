@@ -42,19 +42,12 @@ class ProductViewModel(
         viewModelScope.launch {
             try {
                 _categories.value = repo.fetchCategories()
-
                 val apiProducts = repo.fetchProducts()
                 val firestoreProducts = repo.fetchAllFirestoreProducts()
-
-                println("🔥 Firestore products loaded: ${firestoreProducts.size}")
-                firestoreProducts.forEach {
-                    println("📦 ${it.title} | ${it.category} | ${it.id}")
-                }
-
                 _allProducts.value = apiProducts + firestoreProducts
                 _publishedList.value = repo.fetchUserProducts()
-            } catch (e: Exception) {
-                println("❌ Error loading products: ${e.message}")
+            } catch (_: Exception) {
+                // Silent fail
             }
         }
     }
@@ -78,11 +71,9 @@ class ProductViewModel(
     fun publishProduct(product: Product) {
         viewModelScope.launch {
             repo.addProductToFirestore(product)
-
             val updatedList = _publishedList.value.toMutableList()
             updatedList.add(product)
             _publishedList.value = updatedList
-
             _allProducts.value = _allProducts.value + product
         }
     }
