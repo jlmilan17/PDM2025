@@ -38,7 +38,6 @@ import com.mercatto.myapplication.ui.components.PasswordTextField
 import com.mercatto.myapplication.viewmodel.AuthViewModel
 import com.mercatto.myapplication.viewmodel.LoginUiState
 import com.mercatto.myapplication.R
-//import com.mercatto.myapplication.R
 
 
 @Composable
