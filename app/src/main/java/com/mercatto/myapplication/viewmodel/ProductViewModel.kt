@@ -18,6 +18,7 @@ class ProductViewModel(
     private val _favoriteIds   = MutableStateFlow<Set<String>>(emptySet())
     private val _publishedList = MutableStateFlow<List<Product>>(emptyList())
 
+    val allProducts: StateFlow<List<Product>> = _allProducts
     val favoriteProducts: StateFlow<List<Product>> = combine(
         _allProducts, _favoriteIds
     ) { products, favIds ->
@@ -25,7 +26,6 @@ class ProductViewModel(
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     val publishedProducts: StateFlow<List<Product>> = _publishedList
-
     val categories: StateFlow<List<String>> = _categories
     val selectedCategory: StateFlow<String?> = _selectedCat
     val searchQuery: StateFlow<String> = _searchQuery
@@ -41,6 +41,7 @@ class ProductViewModel(
         viewModelScope.launch {
             _categories.value  = repo.fetchCategories()
             _allProducts.value = repo.fetchProducts()
+            _publishedList.value = repo.fetchUserProducts()
         }
     }
 
@@ -61,8 +62,12 @@ class ProductViewModel(
     }
 
     fun publishProduct(product: Product) {
-        val currentList = _publishedList.value.toMutableList()
-        currentList.add(product)
-        _publishedList.value = currentList
+        viewModelScope.launch {
+            repo.addProductToFirestore(product)
+            val updatedList = _publishedList.value.toMutableList()
+            updatedList.add(product)
+            _publishedList.value = updatedList
+            _allProducts.value = _allProducts.value + product
+        }
     }
 }

@@ -9,32 +9,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.mercatto.myapplication.data.model.Product
 import com.mercatto.myapplication.ui.components.ProductCard
+import com.mercatto.myapplication.viewmodel.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyPostsScreen(navController: NavController) {
-    // To Do: replace with actual data
-    val dummyProducts = listOf(
-        Product(
-            id = "1",
-            title = "Producto 1",
-            price = 10.0,
-            description = "Descripción de producto 1",
-            category = "categoria1",
-            image = "https://via.placeholder.com/150"
-        ),
-        Product(
-            id = "2",
-            title = "Producto 2",
-            price = 20.0,
-            description = "Descripción de producto 2",
-            category = "categoria2",
-            image = "https://via.placeholder.com/150"
-        )
-    )
+fun MyPostsScreen(
+    navController: NavController,
+    viewModel: ProductViewModel = viewModel()
+) {
+    val myProducts by viewModel.publishedProducts.collectAsState()
 
     Scaffold(
         topBar = {
@@ -48,7 +34,7 @@ fun MyPostsScreen(navController: NavController) {
             )
         }
     ) { padding ->
-        if (dummyProducts.isEmpty()) {
+        if (myProducts.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -67,12 +53,13 @@ fun MyPostsScreen(navController: NavController) {
                     .fillMaxSize()
                     .padding(padding)
             ) {
-                items(dummyProducts) { product ->
+                items(myProducts) { product ->
                     ProductCard(
                         product = product,
                         onClick = {
                             navController.navigate("detail/${product.id}")
-                        }
+                        },
+                        onToggleFavorite = null
                     )
                 }
             }
