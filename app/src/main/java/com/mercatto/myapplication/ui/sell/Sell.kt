@@ -138,7 +138,6 @@ fun SellScreen(
 //                        ownerId = userId
                     )
 
-                    // Guardar en Firestore
                     db.collection("products")
                         .document(newProduct.id)
                         .set(newProduct)
