@@ -134,8 +134,8 @@ fun SellScreen(
                         price = price,
                         description = productDescription,
                         category = selectedCategory ?: "Sin categoría",
-                        image = productImageUri?.toString() ?: ""
-//                        ownerId = userId
+                        image = productImageUri?.toString() ?: "",
+                        ownerId = userId
                     )
 
                     db.collection("products")

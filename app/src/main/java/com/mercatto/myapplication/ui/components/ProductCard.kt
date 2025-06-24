@@ -53,7 +53,7 @@ fun ProductCard(
                         maxLines = 1
                     )
                     Text(
-                        text = "$${product.price}",
+                        text = "$${product.price.toDouble()}",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }

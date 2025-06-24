@@ -105,7 +105,7 @@ fun FavoriteItem(
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(product.title, style = MaterialTheme.typography.titleMedium)
-                Text("$${product.price}", style = MaterialTheme.typography.bodySmall)
+                Text("$${product.price.toDouble()}", style = MaterialTheme.typography.bodySmall)
             }
             IconButton(onClick = onToggle) {
                 Icon(

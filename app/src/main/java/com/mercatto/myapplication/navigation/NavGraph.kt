@@ -30,7 +30,7 @@ object Destinations {
     const val FAVORITES        = "favoritos"
     const val MESSAGES         = "mensajes"
     const val DETAIL           = "detail/{id}"
-    const val DETAIL_BASE      = "detail"
+    //const val DETAIL_BASE      = "detail"
 }
 
 @Composable
@@ -93,21 +93,21 @@ fun AppNavGraph(
 
         composable(
             Destinations.DETAIL,
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { backStackEntry ->
             DetailScreen(
-                entry     = backStackEntry,
-                viewModel = productViewModel
+                productId = backStackEntry.arguments?.getString("id") ?: "",
+                viewModel = productViewModel,
+                navController = navController
             )
+
         }
         composable(Destinations.MY_POSTS) {
             MyPostsScreen(navController)
         }
-        // “Favoritos”
         composable(Destinations.FAVORITES) {
             FavoritesScreen(navController, productViewModel)
         }
-        // “Mensajes”
         composable(Destinations.MESSAGES) {
             MessagesScreen(navController)
         }
