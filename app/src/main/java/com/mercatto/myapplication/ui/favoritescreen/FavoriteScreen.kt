@@ -42,7 +42,6 @@ fun FavoritesScreen(
     navController: NavController,
     viewModel: ProductViewModel = viewModel()
 ) {
-    // 1) Recoge la lista de favoritos como State de Compose
     val favorites by viewModel.favoriteProducts.collectAsState()
 
     Scaffold(

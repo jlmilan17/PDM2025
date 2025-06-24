@@ -11,39 +11,29 @@ class ProductViewModel(
     private val repo: ProductRepository = ProductRepository()
 ) : ViewModel() {
 
-    //1. Productos traidos de la API
     private val _allProducts   = MutableStateFlow<List<Product>>(emptyList())
     private val _categories    = MutableStateFlow<List<String>>(emptyList())
     private val _selectedCat   = MutableStateFlow<String?>(null)
     private val _searchQuery   = MutableStateFlow("")
+    private val _favoriteIds   = MutableStateFlow<Set<String>>(emptySet())
     private val _publishedList = MutableStateFlow<List<Product>>(emptyList())
 
-    // 2) IDs de los productos marcados como favoritos
-    // Empezamos con un Set vacío para evitar duplicados
-    private val _favoriteIds = MutableStateFlow<Set<Int>>(emptySet())
-    val favoriteIds: StateFlow<Set<Int>> = _favoriteIds
-
-    // 3) Lista de productos favoritos, combinando todos los productos con los IDs favoritos
     val favoriteProducts: StateFlow<List<Product>> = combine(
-        _allProducts,
-        _favoriteIds
+        _allProducts, _favoriteIds
     ) { products, favIds ->
         products.filter { it.id in favIds }
-    }
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    val publishedProducts: StateFlow<List<Product>> = _publishedList
 
     val categories: StateFlow<List<String>> = _categories
     val selectedCategory: StateFlow<String?> = _selectedCat
     val searchQuery: StateFlow<String> = _searchQuery
-    val publishedProducts: StateFlow<List<Product>> = _publishedList
 
     val filteredProducts: StateFlow<List<Product>> = combine(
-        _allProducts,
-        _selectedCat,
-        _searchQuery
+        _allProducts, _selectedCat, _searchQuery
     ) { products, cat, query ->
-        products
-            .filter { cat == null || it.category.equals(cat, ignoreCase = true) }
+        products.filter { cat == null || it.category.equals(cat, ignoreCase = true) }
             .filter { it.title.contains(query, ignoreCase = true) }
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
@@ -54,17 +44,13 @@ class ProductViewModel(
         }
     }
 
-    // 5) Función para alternar favorito
-    fun toggleFavorite(productId: Int) {
+    fun toggleFavorite(productId: String) {
         val current = _favoriteIds.value.toMutableSet()
-        if (productId in current) current -= productId
-        else current += productId
+        if (productId in current) current -= productId else current += productId
         _favoriteIds.value = current
     }
 
-    // 6) Helper para la UI
-    fun isFavorite(productId: Int): Boolean =
-        productId in _favoriteIds.value
+    fun isFavorite(productId: String): Boolean = productId in _favoriteIds.value
 
     fun selectCategory(cat: String?) {
         _selectedCat.value = cat
@@ -74,20 +60,9 @@ class ProductViewModel(
         _searchQuery.value = query
     }
 
-    fun loadCategories() {
-        viewModelScope.launch {
-            _categories.value = repo.fetchCategories()
-        }
-    }
-
     fun publishProduct(product: Product) {
-        viewModelScope.launch {
-            repo.addProductToFirestore(product)
-            val currentList = _publishedList.value.toMutableList()
-            currentList.add(product)
-            _publishedList.value = currentList
-        }
+        val currentList = _publishedList.value.toMutableList()
+        currentList.add(product)
+        _publishedList.value = currentList
     }
-
-
 }
