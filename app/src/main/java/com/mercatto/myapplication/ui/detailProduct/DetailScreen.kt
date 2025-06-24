@@ -64,7 +64,7 @@ fun DetailScreen(
                     contentScale = ContentScale.Crop
                 )
                 Text(product.title, style = MaterialTheme.typography.headlineSmall)
-                Text("$${product.price}", style = MaterialTheme.typography.bodyLarge)
+                Text("$${product.price.toDouble()}", style = MaterialTheme.typography.bodyLarge)
                 Text(product.description, style = MaterialTheme.typography.bodyMedium)
                 Text("Categoría: ${product.category}", style = MaterialTheme.typography.labelSmall)
             }

@@ -26,7 +26,9 @@ class ProductRepository {
                 .whereEqualTo("ownerId", userId)
                 .get()
                 .await()
-            snapshot.toObjects(Product::class.java)
+            snapshot.documents.mapNotNull { doc ->
+                doc.data?.let { Product.fromMap(it) }
+            }
         } catch (e: Exception) {
             emptyList()
         }
@@ -38,7 +40,9 @@ class ProductRepository {
     suspend fun fetchAllFirestoreProducts(): List<Product> {
         return try {
             val snapshot = productsCollection.get().await()
-            snapshot.toObjects(Product::class.java)
+            snapshot.documents.mapNotNull { doc ->
+                doc.data?.let { Product.fromMap(it) }
+            }
         } catch (e: Exception) {
             emptyList()
         }

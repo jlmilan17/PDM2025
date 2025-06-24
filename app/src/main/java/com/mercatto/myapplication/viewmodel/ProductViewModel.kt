@@ -33,19 +33,29 @@ class ProductViewModel(
     val filteredProducts: StateFlow<List<Product>> = combine(
         _allProducts, _selectedCat, _searchQuery
     ) { products, cat, query ->
-        products.filter { cat == null || it.category.equals(cat, ignoreCase = true) }
+        products
+            .filter { cat == null || it.category.equals(cat, ignoreCase = true) }
             .filter { it.title.contains(query, ignoreCase = true) }
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     init {
         viewModelScope.launch {
-            _categories.value = repo.fetchCategories()
+            try {
+                _categories.value = repo.fetchCategories()
 
-            val apiProducts = repo.fetchProducts()
-            val firestoreProducts = repo.fetchAllFirestoreProducts()
-            _allProducts.value = apiProducts + firestoreProducts
+                val apiProducts = repo.fetchProducts()
+                val firestoreProducts = repo.fetchAllFirestoreProducts()
 
-            _publishedList.value = repo.fetchUserProducts()
+                println("🔥 Firestore products loaded: ${firestoreProducts.size}")
+                firestoreProducts.forEach {
+                    println("📦 ${it.title} | ${it.category} | ${it.id}")
+                }
+
+                _allProducts.value = apiProducts + firestoreProducts
+                _publishedList.value = repo.fetchUserProducts()
+            } catch (e: Exception) {
+                println("❌ Error loading products: ${e.message}")
+            }
         }
     }
 
