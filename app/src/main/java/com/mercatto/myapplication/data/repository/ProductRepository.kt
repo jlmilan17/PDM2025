@@ -34,4 +34,13 @@ class ProductRepository {
 
     suspend fun fetchCategories(): List<String> =
         api.getAllCategories()
+
+    suspend fun fetchAllFirestoreProducts(): List<Product> {
+        return try {
+            val snapshot = productsCollection.get().await()
+            snapshot.toObjects(Product::class.java)
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 }

@@ -39,8 +39,12 @@ class ProductViewModel(
 
     init {
         viewModelScope.launch {
-            _categories.value  = repo.fetchCategories()
-            _allProducts.value = repo.fetchProducts()
+            _categories.value = repo.fetchCategories()
+
+            val apiProducts = repo.fetchProducts()
+            val firestoreProducts = repo.fetchAllFirestoreProducts()
+            _allProducts.value = apiProducts + firestoreProducts
+
             _publishedList.value = repo.fetchUserProducts()
         }
     }
@@ -64,9 +68,11 @@ class ProductViewModel(
     fun publishProduct(product: Product) {
         viewModelScope.launch {
             repo.addProductToFirestore(product)
+
             val updatedList = _publishedList.value.toMutableList()
             updatedList.add(product)
             _publishedList.value = updatedList
+
             _allProducts.value = _allProducts.value + product
         }
     }

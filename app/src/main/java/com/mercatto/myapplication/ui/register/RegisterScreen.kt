@@ -47,7 +47,6 @@ fun RegisterScreen(
 ) {
     val registerState by viewModel.registerState.collectAsState()
 
-    // Local state de los campos
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
@@ -59,7 +58,6 @@ fun RegisterScreen(
     var storeLocation by remember { mutableStateOf("") }
     var storeImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // Efecto para navegar al éxito de registro
     LaunchedEffect(registerState) {
         if (registerState is RegisterUiState.Success) {
             onRegisterSuccess()
@@ -96,7 +94,6 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Nombre completo
         OutlinedTextField(
             value = fullName,
             onValueChange = { fullName = it },
@@ -105,7 +102,6 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Correo
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -115,7 +111,6 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Teléfono
         OutlinedTextField(
             value = phone,
             onValueChange = { phone = it },
@@ -125,7 +120,6 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Contraseña
         PasswordTextField(
             password = password,
             onPasswordChange = { password = it },
@@ -134,7 +128,6 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Confirmar contraseña
         PasswordTextField(
             password = confirmPass,
             onPasswordChange = { confirmPass = it },
@@ -143,7 +136,6 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Switch de vendedor
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -155,7 +147,6 @@ fun RegisterScreen(
             )
         }
 
-        // Campos adicionales para vendedores
         if (isSeller) {
             OutlinedTextField(
                 value = storeName,
@@ -180,7 +171,6 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Selector de imagen de tienda
             StoreImageSelector(
                 storeImageUri = storeImageUri,
                 onImageSelected = { storeImageUri = it }
@@ -189,7 +179,6 @@ fun RegisterScreen(
 
         Spacer(Modifier.weight(1f))
 
-        // Botón de registro
         Button(
             onClick = {
                 viewModel.register(
@@ -218,7 +207,6 @@ fun RegisterScreen(
             }
         }
 
-        // Mensaje de error
         if (registerState is RegisterUiState.Error) {
             Spacer(Modifier.height(8.dp))
             Text(
@@ -227,7 +215,6 @@ fun RegisterScreen(
             )
         }
 
-        // Botón volver
         TextButton(
             onClick = onNavigateBack,
             modifier = Modifier.align(Alignment.CenterHorizontally)

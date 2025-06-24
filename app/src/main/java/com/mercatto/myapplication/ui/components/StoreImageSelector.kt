@@ -28,7 +28,6 @@ fun StoreImageSelector(
     onImageSelected: (Uri?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Launcher para escoger imagen de galería
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
