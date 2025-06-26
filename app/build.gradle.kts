@@ -50,7 +50,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-firestore-ktx")
     implementation ("com.google.firebase:firebase-storage-ktx")
     // Coil & icons
-    implementation("io.coil-kt.coil3:coil-compose:3.2.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     // Navigation Compose
     implementation("androidx.navigation:navigation-compose:2.9.0")

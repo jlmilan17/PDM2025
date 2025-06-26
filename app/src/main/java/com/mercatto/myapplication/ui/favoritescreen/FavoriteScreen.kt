@@ -31,7 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil3.compose.AsyncImage
+import coil.compose.AsyncImage
 import com.mercatto.myapplication.data.model.Product
 import com.mercatto.myapplication.viewmodel.ProductViewModel
 
