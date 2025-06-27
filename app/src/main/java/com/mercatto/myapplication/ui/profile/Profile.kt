@@ -27,7 +27,6 @@ fun ProfileScreen(
     var showDialog by remember { mutableStateOf(false) }
     val firebaseUser = authViewModel.getCurrentUser()
 
-    // Cargar datos del usuario desde Firestore
     val userDataState = rememberFirestoreUser(firebaseUser?.uid.orEmpty())
     val userData = userDataState.value
 
@@ -39,7 +38,6 @@ fun ProfileScreen(
     ) {
         Spacer(Modifier.height(32.dp))
 
-        // Avatar
         Surface(
             shape = CircleShape,
             color = MaterialTheme.colorScheme.surfaceVariant,
