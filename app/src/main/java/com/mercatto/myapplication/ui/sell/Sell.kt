@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.mercatto.myapplication.data.model.Product
 import com.mercatto.myapplication.ui.components.StoreImageSelector
 import com.mercatto.myapplication.viewmodel.ProductViewModel
@@ -128,29 +129,65 @@ fun SellScreen(
             Button(
                 onClick = {
                     val price = productPriceText.toDoubleOrNull() ?: 0.0
-                    val newProduct = Product(
-                        id = UUID.randomUUID().toString(),
-                        title = productTitle,
-                        price = price,
-                        description = productDescription,
-                        category = selectedCategory ?: "Sin categoría",
-                        image = productImageUri?.toString() ?: "",
-                        ownerId = userId
-                    )
+                    val productId = UUID.randomUUID().toString()
 
-                    db.collection("products")
-                        .document(newProduct.id)
-                        .set(newProduct)
-                        .addOnSuccessListener {
-                            println("Producto publicado exitosamente")
-                            viewModel.publishProduct(newProduct)
-                            navController.popBackStack()
-                        }
-                        .addOnFailureListener {
-                            println("Error al publicar el producto: ${it.message}")
-                        }
+                    if (productImageUri != null) {
+                        val storageRef = FirebaseStorage.getInstance()
+                            .reference.child("product_images/$productId.jpg")
 
-                },
+                        storageRef.putFile(productImageUri!!)
+                            .addOnSuccessListener {
+                                storageRef.downloadUrl.addOnSuccessListener { uri ->
+                                    val newProduct = Product(
+                                        id = productId,
+                                        title = productTitle,
+                                        price = price,
+                                        description = productDescription,
+                                        category = selectedCategory ?: "Sin categoría",
+                                        image = uri.toString(), 
+                                        ownerId = userId
+                                    )
+
+                                    db.collection("products")
+                                        .document(newProduct.id)
+                                        .set(newProduct)
+                                        .addOnSuccessListener {
+                                            viewModel.publishProduct(newProduct)
+                                            navController.popBackStack()
+                                        }
+                                        .addOnFailureListener {
+                                            println("Error al publicar el producto: ${it.message}")
+                                        }
+                                }
+                            }
+                            .addOnFailureListener {
+                                println("Error al subir imagen: ${it.message}")
+                            }
+
+                    } else {
+                        val newProduct = Product(
+                            id = productId,
+                            title = productTitle,
+                            price = price,
+                            description = productDescription,
+                            category = selectedCategory ?: "Sin categoría",
+                            image = "",
+                            ownerId = userId
+                        )
+
+                        db.collection("products")
+                            .document(newProduct.id)
+                            .set(newProduct)
+                            .addOnSuccessListener {
+                                viewModel.publishProduct(newProduct)
+                                navController.popBackStack()
+                            }
+                            .addOnFailureListener {
+                                println("Error al publicar el producto: ${it.message}")
+                            }
+                    }
+                }
+                ,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Publicar producto")
