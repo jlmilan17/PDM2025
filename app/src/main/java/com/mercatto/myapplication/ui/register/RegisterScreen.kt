@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -65,161 +66,217 @@ fun RegisterScreen(
         }
     }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(R.drawable.logo),
-                contentDescription = "Logo",
-                modifier = Modifier.size(300.dp)
-            )
-
+        item {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(300.dp)
+                )
+            }
         }
 
-        Text(
-            text = "Bienvenido a Mercatto!",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-
-        Text("Registro de usuario", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.align(Alignment.CenterHorizontally))
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = fullName,
-            onValueChange = { fullName = it },
-            label = { Text("Nombre completo") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Correo electrónico") },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = phone,
-            onValueChange = { phone = it },
-            label = { Text("Teléfono") },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        PasswordTextField(
-            password = password,
-            onPasswordChange = { password = it },
-            showPassword = false,
-            onToggleShowPassword = {  },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        PasswordTextField(
-            password = confirmPass,
-            onPasswordChange = { confirmPass = it },
-            showPassword = false,
-            onToggleShowPassword = {  },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Quiero vender productos", modifier = Modifier.weight(1f))
-            Switch(
-                checked = isSeller,
-                onCheckedChange = { isSeller = it }
-            )
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Bienvenido a Mercatto!",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
         }
 
-        if (isSeller) {
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Registro de usuario",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            }
+        }
+
+
+        item { Spacer(modifier = Modifier.height(8.dp)) }
+
+        item {
             OutlinedTextField(
-                value = storeName,
-                onValueChange = { storeName = it },
-                label = { Text("Nombre de la tienda") },
+                value = fullName,
+                onValueChange = { fullName = it },
+                label = { Text("Nombre completo") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+
+        item {
             OutlinedTextField(
-                value = storeContact,
-                onValueChange = { storeContact = it },
-                label = { Text("Teléfono de contacto") },
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Correo electrónico") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        item {
+            OutlinedTextField(
+                value = phone,
+                onValueChange = { phone = it },
+                label = { Text("Teléfono") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier.fillMaxWidth()
             )
-            OutlinedTextField(
-                value = storeLocation,
-                onValueChange = { storeLocation = it },
-                label = { Text("Ubicación") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+        }
 
-            StoreImageSelector(
-                storeImageUri = storeImageUri,
-                onImageSelected = { storeImageUri = it }
+        item {
+            PasswordTextField(
+                password = password,
+                onPasswordChange = { password = it },
+                showPassword = false,
+                onToggleShowPassword = { },
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
-        Spacer(Modifier.weight(1f))
+        item {
+            PasswordTextField(
+                password = confirmPass,
+                onPasswordChange = { confirmPass = it },
+                showPassword = false,
+                onToggleShowPassword = { },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
-        Button(
-            onClick = {
-                viewModel.register(
-                    fullName = fullName.trim(),
-                    email = email.trim(),
-                    phone = phone.trim(),
-                    password = password,
-                    confirmPassword = confirmPass,
-                    isSeller = isSeller,
-                    storeName = storeName.trim().takeIf { isSeller },
-                    storeContact = storeContact.trim().takeIf { isSeller },
-                    storeLocation = storeLocation.trim().takeIf { isSeller },
-                    storeImageUri = storeImageUri
+        item {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Quiero vender productos", modifier = Modifier.weight(1f))
+                Switch(
+                    checked = isSeller,
+                    onCheckedChange = { isSeller = it }
                 )
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = registerState != RegisterUiState.Loading
-        ) {
-            if (registerState is RegisterUiState.Loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    strokeWidth = 2.dp
+            }
+        }
+
+        if (isSeller) {
+            item {
+                OutlinedTextField(
+                    value = storeName,
+                    onValueChange = { storeName = it },
+                    label = { Text("Nombre de la tienda") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
                 )
-            } else {
-                Text("Registrar")
+            }
+
+            item {
+                OutlinedTextField(
+                    value = storeContact,
+                    onValueChange = { storeContact = it },
+                    label = { Text("Teléfono de contacto") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            item {
+                OutlinedTextField(
+                    value = storeLocation,
+                    onValueChange = { storeLocation = it },
+                    label = { Text("Ubicación") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            item {
+                StoreImageSelector(
+                    storeImageUri = storeImageUri,
+                    onImageSelected = { storeImageUri = it }
+                )
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        item {
+            Button(
+                onClick = {
+                    viewModel.register(
+                        fullName = fullName.trim(),
+                        email = email.trim(),
+                        phone = phone.trim(),
+                        password = password,
+                        confirmPassword = confirmPass,
+                        isSeller = isSeller,
+                        storeName = storeName.trim().takeIf { isSeller },
+                        storeContact = storeContact.trim().takeIf { isSeller },
+                        storeLocation = storeLocation.trim().takeIf { isSeller },
+                        storeImageUri = storeImageUri
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = registerState != RegisterUiState.Loading
+            ) {
+                if (registerState is RegisterUiState.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text("Registrar")
+                }
             }
         }
 
         if (registerState is RegisterUiState.Error) {
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = (registerState as RegisterUiState.Error).message,
-                color = MaterialTheme.colorScheme.error
-            )
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = (registerState as RegisterUiState.Error).message,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
         }
 
-        TextButton(
-            onClick = onNavigateBack,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text("Volver")
+        item {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextButton(
+                    onClick = onNavigateBack
+                ) {
+                    Text("Volver")
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+            }
         }
+
     }
 }
