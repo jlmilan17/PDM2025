@@ -1,6 +1,6 @@
 package com.mercatto.myapplication.ui.detailProduct
 
-import androidx.compose.foundation.Image
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -9,11 +9,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-//import coil3.compose.AsyncImage
+import com.google.firebase.auth.FirebaseAuth
 import com.mercatto.myapplication.viewmodel.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,12 +22,12 @@ import com.mercatto.myapplication.viewmodel.ProductViewModel
 fun DetailScreen(
     navController: NavController,
     productId: String,
-    viewModel: ProductViewModel
+    viewModel: ProductViewModel = viewModel()
 ) {
-    val allProducts by viewModel.allProducts.collectAsState()
-    val publishedProducts by viewModel.publishedProducts.collectAsState()
-
-    val product = (allProducts + publishedProducts).find { it.id == productId }
+    val product = viewModel.allProducts.collectAsState().value.find { it.id == productId }
+    val currentUser = FirebaseAuth.getInstance().currentUser?.uid
+    val context = LocalContext.current
+    var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -34,42 +35,86 @@ fun DetailScreen(
                 title = { Text("Detalle del producto") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Atrás")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
                     }
                 }
             )
         }
     ) { padding ->
-        if (product == null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("Producto no encontrado")
-            }
-        } else {
+        product?.let { selectedProduct ->
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(padding)
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 AsyncImage(
-                    model = product.image,
-                    contentDescription = product.title,
+                    model = selectedProduct.image,
+                    contentDescription = selectedProduct.title,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(240.dp),
+                        .height(250.dp),
                     contentScale = ContentScale.Crop
                 )
-                Text(product.title, style = MaterialTheme.typography.headlineSmall)
-                Text("$${product.price.toDouble()}", style = MaterialTheme.typography.bodyLarge)
-                Text(product.description, style = MaterialTheme.typography.bodyMedium)
-                Text("Categoría: ${product.category}", style = MaterialTheme.typography.labelSmall)
+
+                Text(selectedProduct.title, style = MaterialTheme.typography.headlineSmall)
+                Text("$${selectedProduct.price}", style = MaterialTheme.typography.titleMedium)
+
+                AssistChip(
+                    onClick = {},
+                    label = { Text(selectedProduct.category) },
+                    enabled = false
+                )
+
+                Text("Descripción", style = MaterialTheme.typography.titleSmall)
+                Text(selectedProduct.description, style = MaterialTheme.typography.bodyMedium)
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                if (selectedProduct.ownerId == currentUser) {
+                    Button(
+                        onClick = { showDialog = true },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    ) {
+                        Text("Eliminar producto")
+                    }
+                }
+
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false },
+                        title = { Text("¿Eliminar producto?") },
+                        text = { Text("¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.") },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    viewModel.deleteProduct(selectedProduct.id)
+                                    viewModel.refreshPublishedProducts()
+                                    Toast.makeText(context, "Producto eliminado", Toast.LENGTH_SHORT).show()
+                                    showDialog = false
+                                    navController.popBackStack()
+                                }
+
+                            ) {
+                                Text("Eliminar", color = MaterialTheme.colorScheme.error)
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showDialog = false }) {
+                                Text("Cancelar")
+                            }
+                        }
+                    )
+                }
             }
+        } ?: Box(
+            Modifier
+                .fillMaxSize()
+                .padding(padding),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Producto no encontrado")
         }
     }
 }

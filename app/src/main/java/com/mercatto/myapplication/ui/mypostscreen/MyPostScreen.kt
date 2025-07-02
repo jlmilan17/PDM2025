@@ -9,8 +9,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.mercatto.myapplication.ui.components.ProductCard
 import com.mercatto.myapplication.viewmodel.ProductViewModel
 
@@ -21,6 +25,22 @@ fun MyPostsScreen(
     viewModel: ProductViewModel = viewModel()
 ) {
     val myProducts by viewModel.publishedProducts.collectAsState()
+
+    val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
+
+    DisposableEffect(Unit) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.refreshPublishedProducts()
+            }
+        }
+        val lifecycle = lifecycleOwner.value.lifecycle
+        lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycle.removeObserver(observer)
+        }
+    }
 
     Scaffold(
         topBar = {

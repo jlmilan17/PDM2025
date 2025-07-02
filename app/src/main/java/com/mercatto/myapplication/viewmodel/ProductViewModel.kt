@@ -77,4 +77,19 @@ class ProductViewModel(
             _allProducts.value = _allProducts.value + product
         }
     }
+
+    fun deleteProduct(productId: String) {
+        viewModelScope.launch {
+            repo.deleteProduct(productId)
+            _publishedList.value = _publishedList.value.filterNot { it.id == productId }
+            _allProducts.value = _allProducts.value.filterNot { it.id == productId }
+            _favoriteIds.value = _favoriteIds.value - productId
+        }
+    }
+
+    fun refreshPublishedProducts() {
+        viewModelScope.launch {
+            _publishedList.value = repo.fetchUserProducts()
+        }
+    }
 }

@@ -16,6 +16,10 @@ class ProductRepository {
         productsCollection.document(product.id).set(product).await()
     }
 
+    suspend fun deleteProduct(productId: String) {
+        productsCollection.document(productId).delete().await()
+    }
+
     suspend fun fetchProducts(): List<Product> =
         api.getAllProducts()
 
