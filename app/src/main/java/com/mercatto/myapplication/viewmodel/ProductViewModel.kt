@@ -47,7 +47,6 @@ class ProductViewModel(
                 _allProducts.value = apiProducts + firestoreProducts
                 _publishedList.value = repo.fetchUserProducts()
             } catch (_: Exception) {
-                // Silent fail
             }
         }
     }

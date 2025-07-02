@@ -30,7 +30,6 @@ object Destinations {
     const val FAVORITES        = "favoritos"
     const val MESSAGES         = "mensajes"
     const val DETAIL           = "detail/{id}"
-    //const val DETAIL_BASE      = "detail"
 }
 
 @Composable
