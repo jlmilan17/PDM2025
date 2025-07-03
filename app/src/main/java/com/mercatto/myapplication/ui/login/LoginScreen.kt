@@ -38,8 +38,10 @@ import com.mercatto.myapplication.ui.components.PasswordTextField
 import com.mercatto.myapplication.viewmodel.AuthViewModel
 import com.mercatto.myapplication.viewmodel.LoginUiState
 import com.mercatto.myapplication.R
+import kotlinx.coroutines.delay
 
 
+//@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel,
@@ -51,12 +53,30 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
+
+    // Control local del mensaje de error
+    var showError by remember { mutableStateOf(false) }
+    var errorMsg by remember { mutableStateOf("") }
+
     val mainColor = Color(14, 70, 61)
 
     LaunchedEffect(loginState) {
-        if (loginState is LoginUiState.Success) {
-            onLoginSuccess()
-            viewModel.resetLoginState()
+        when (loginState) {
+            is LoginUiState.Success -> {
+                onLoginSuccess()
+                viewModel.resetLoginState()
+            }
+            is LoginUiState.Error -> {
+                // Capturamos el mensaje y lo mostramos
+                errorMsg = (loginState as LoginUiState.Error).message
+                showError = true
+
+                // Tras 3 segundos lo ocultamos y limpiamos el estado
+                delay(3000)
+                showError = false
+                viewModel.resetLoginState()
+            }
+            else -> { /* Idle o Loading: nada */ }
         }
     }
 
@@ -64,74 +84,69 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement   = Arrangement.Center,
+        horizontalAlignment   = Alignment.CenterHorizontally
     ) {
-
         Image(
-            painter = painterResource(R.drawable.logo),
-            contentDescription = "Logo",
-            modifier = Modifier.size(100.dp)
+            painter             = painterResource(R.drawable.logo),
+            contentDescription  = "Logo",
+            modifier            = Modifier.size(100.dp)
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(Modifier.height(24.dp))
 
         Text(
             "Iniciar sesión",
             style = MaterialTheme.typography.headlineSmall,
-            color = Color(14, 70, 61)
+            color = mainColor
         )
 
         Spacer(Modifier.height(24.dp))
 
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Correo electrónico") },
-            singleLine = true,
+            value        = email,
+            onValueChange= { email = it },
+            label        = { Text("Correo electrónico") },
+            singleLine   = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = mainColor.copy(alpha = 0.1f),
+            modifier     = Modifier.fillMaxWidth(),
+            colors       = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor   = mainColor.copy(alpha = 0.1f),
                 unfocusedContainerColor = Color.Transparent,
-                focusedLabelColor = mainColor,
-                unfocusedLabelColor = mainColor,
-                focusedBorderColor = mainColor,
-                unfocusedBorderColor = Color.Gray,
-                focusedTextColor = mainColor
+                focusedLabelColor       = mainColor,
+                unfocusedLabelColor     = mainColor,
+                focusedBorderColor      = mainColor,
+                unfocusedBorderColor    = Color.Gray,
+                focusedTextColor        = mainColor
             )
         )
 
         Spacer(Modifier.height(16.dp))
 
         PasswordTextField(
-            password = password,
-            onPasswordChange = { password = it },
-            showPassword = showPassword,
+            password             = password,
+            onPasswordChange     = { password = it },
+            showPassword         = showPassword,
             onToggleShowPassword = { showPassword = !showPassword },
-            modifier = Modifier.fillMaxWidth()
+            modifier             = Modifier.fillMaxWidth()
         )
-
-        Spacer(Modifier.height(8.dp))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = showPassword, onCheckedChange = { showPassword = it })
-            Text("Mostrar contraseña")
-        }
 
         Spacer(Modifier.height(24.dp))
 
         Button(
-            onClick = { viewModel.signIn(email.trim(), password) },
+            onClick  = { viewModel.signIn(email.trim(), password) },
             modifier = Modifier.fillMaxWidth(),
-            enabled = loginState != LoginUiState.Loading,
-            colors = ButtonDefaults.buttonColors(
+            enabled  = loginState != LoginUiState.Loading,
+            colors   = ButtonDefaults.buttonColors(
                 containerColor = mainColor,
-                contentColor = Color.White
+                contentColor   = Color.White
             )
         ) {
             if (loginState == LoginUiState.Loading) {
-                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                CircularProgressIndicator(
+                    modifier    = Modifier.size(20.dp),
+                    strokeWidth = 2.dp
+                )
             } else {
                 Text("Iniciar sesión")
             }
@@ -143,11 +158,13 @@ fun LoginScreen(
             Text("¿No tienes una cuenta? Regístrate", color = mainColor)
         }
 
-        if (loginState is LoginUiState.Error) {
+        // Aquí el Text de error aparece sólo cuando showError == true
+        if (showError) {
             Spacer(Modifier.height(12.dp))
             Text(
-                text = (loginState as LoginUiState.Error).message,
-                color = MaterialTheme.colorScheme.error
+                text  = "Se ha producido un error con las credenciales",
+                color = Color.Red,
+                modifier = Modifier.padding(8.dp)
             )
         }
     }

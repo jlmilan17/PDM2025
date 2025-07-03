@@ -33,7 +33,11 @@ fun HomeScreen(
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
             Spacer(Modifier.height(8.dp))
-            SearchBar(query = searchQuery, onQueryChange = viewModel::onSearchQueryChange)
+
+            Column(Modifier.padding(horizontal = 16.dp)) {
+                SearchBar(query = searchQuery, onQueryChange = viewModel::onSearchQueryChange)
+            }
+
             Spacer(Modifier.height(12.dp))
 
             LazyRow(

@@ -13,6 +13,7 @@ import com.mercatto.myapplication.viewmodel.AuthViewModel
 import com.mercatto.myapplication.navigation.Destinations
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,6 +25,7 @@ fun ProfileScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
+    val mainColor = Color(14, 70, 61)
     var showDialog by remember { mutableStateOf(false) }
     val firebaseUser = authViewModel.getCurrentUser()
 
@@ -82,22 +84,23 @@ fun ProfileScreen(
         Button(
             onClick = { navController.navigate(Destinations.MY_POSTS) },
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-            modifier = buttonMod
-        ) { Text("Mis publicaciones") }
+            modifier = buttonMod,
+            
+        ) { Text("Mis publicaciones", color = mainColor) }
         Spacer(Modifier.height(8.dp))
 
         Button(
             onClick = { navController.navigate(Destinations.FAVORITES) },
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
             modifier = buttonMod
-        ) { Text("Favoritos") }
+        ) { Text("Favoritos", color = mainColor) }
         Spacer(Modifier.height(8.dp))
 
         Button(
             onClick = { navController.navigate(Destinations.MESSAGES) },
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
             modifier = buttonMod
-        ) { Text("Mensajes") }
+        ) { Text("Mensajes", color = mainColor) }
         Spacer(Modifier.height(32.dp))
 
         Button(

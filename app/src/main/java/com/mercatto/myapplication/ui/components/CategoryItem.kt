@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -21,6 +22,8 @@ fun CategoryItem(
     selected: Boolean,
     onClick: () -> Unit
 ) {
+    val mainColor = Color(14, 70, 61)
+
     Column(
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -29,9 +32,9 @@ fun CategoryItem(
         Surface(
             shape = CircleShape,
             color = if (selected)
-                MaterialTheme.colorScheme.primary
+                mainColor.copy(alpha = 0.8f)
             else
-                MaterialTheme.colorScheme.surfaceVariant,
+                mainColor,
             modifier = Modifier
                 .size(72.dp)
                 .clickable(onClick = onClick)
@@ -39,7 +42,8 @@ fun CategoryItem(
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector   = Icons.Filled.Star,
-                    contentDescription = name
+                    contentDescription = name,
+                    tint = Color.White
                 )
             }
         }

@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -25,6 +26,7 @@ fun MyPostsScreen(
     viewModel: ProductViewModel = viewModel()
 ) {
     val myProducts by viewModel.publishedProducts.collectAsState()
+    val mainColor = Color(14, 70, 61)
 
     val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
 
@@ -45,10 +47,11 @@ fun MyPostsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mis publicaciones") },
+                title = { Text("Mis publicaciones", color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = mainColor),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Atrás")
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Atrás", tint = Color.White)
                     }
                 }
             )

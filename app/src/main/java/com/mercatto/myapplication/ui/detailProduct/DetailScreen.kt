@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -28,14 +29,16 @@ fun DetailScreen(
     val currentUser = FirebaseAuth.getInstance().currentUser?.uid
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
+    val mainColor = Color(14, 70, 61)
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detalle del producto") },
+                title = { Text("Detalle del producto", color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = mainColor),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás", tint = Color.White)
                     }
                 }
             )
@@ -58,16 +61,20 @@ fun DetailScreen(
                     contentScale = ContentScale.Crop
                 )
 
-                Text(selectedProduct.title, style = MaterialTheme.typography.headlineSmall)
+                Text(selectedProduct.title, style = MaterialTheme.typography.headlineSmall, color = mainColor)
                 Text("$${selectedProduct.price}", style = MaterialTheme.typography.titleMedium)
 
                 AssistChip(
                     onClick = {},
                     label = { Text(selectedProduct.category) },
-                    enabled = false
+                    enabled = true,
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = mainColor,
+                        labelColor = Color.White
+                    )
                 )
 
-                Text("Descripción", style = MaterialTheme.typography.titleSmall)
+                Text("Descripción", style = MaterialTheme.typography.titleSmall, color = mainColor)
                 Text(selectedProduct.description, style = MaterialTheme.typography.bodyMedium)
 
                 Spacer(modifier = Modifier.weight(1f))
