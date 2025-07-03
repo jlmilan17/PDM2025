@@ -76,7 +76,7 @@ fun SellScreen(
                 onValueChange = { productTitle = it },
                 label = { Text("Título") },
                 singleLine = true,
-                shape = RoundedCornerShape(24.dp),
+
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -86,7 +86,7 @@ fun SellScreen(
                 label = { Text("Precio") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                shape = RoundedCornerShape(24.dp),
+
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -101,7 +101,7 @@ fun SellScreen(
                     readOnly = true,
                     label = { Text("Categoría") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
-                    shape = RoundedCornerShape(24.dp),
+
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth()
@@ -127,7 +127,7 @@ fun SellScreen(
                 onValueChange = { productDescription = it },
                 label = { Text("Descripción") },
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp),
+
                 minLines = 3,
                 maxLines = Int.MAX_VALUE
             )
@@ -139,8 +139,8 @@ fun SellScreen(
 
                     try {
                         price = productPriceText.toDouble()
-                        if (price < 0) {
-                            Toast.makeText(context, "Formato de precio inválido", Toast.LENGTH_LONG)
+                        if (price <= 0) {
+                            Toast.makeText(context, "Precio inválido", Toast.LENGTH_LONG)
                                 .show()
                             return@Button
                         }
