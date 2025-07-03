@@ -55,7 +55,7 @@ fun DetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(250.dp),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Fit
                 )
 
                 Text(selectedProduct.title, style = MaterialTheme.typography.headlineSmall)
