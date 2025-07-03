@@ -175,8 +175,10 @@ fun SellScreen(
                                                 println("Error al publicar el producto: ${it.message}")
                                             }
                                     }
+                                    Toast.makeText(context, "Producto publicado", Toast.LENGTH_LONG).show()
                                 }
                                 .addOnFailureListener {
+                                    Toast.makeText(context, "Error al publicar el producto", Toast.LENGTH_LONG).show()
                                     println("Error al subir imagen: ${it.message}")
                                 }
 
@@ -197,6 +199,7 @@ fun SellScreen(
                                 .addOnSuccessListener {
                                     viewModel.publishProduct(newProduct)
                                     navController.popBackStack()
+                                    Toast.makeText(context, "Producto publicado", Toast.LENGTH_LONG).show()
                                 }
                                 .addOnFailureListener {
                                     println("Error al publicar el producto: ${it.message}")
