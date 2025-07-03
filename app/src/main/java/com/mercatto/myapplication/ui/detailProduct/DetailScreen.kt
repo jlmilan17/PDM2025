@@ -2,6 +2,7 @@ package com.mercatto.myapplication.ui.detailProduct
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -16,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.firebase.auth.FirebaseAuth
+import com.mercatto.myapplication.navigation.Destinations
 import com.mercatto.myapplication.viewmodel.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,13 +81,33 @@ fun DetailScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                if (selectedProduct.ownerId == currentUser) {
-                    Button(
-                        onClick = { showDialog = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                    ) {
-                        Text("Eliminar producto")
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement =  Arrangement.Center
+                ) {
+                    if (selectedProduct.ownerId == currentUser) {
+                        Button(
+                            onClick = { showDialog = true },
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                        ) {
+                            Text("Eliminar producto")
+                        }
                     }
+
+                    if (selectedProduct.ownerId != currentUser) {
+                        Button(
+                            onClick = {
+                                navController.navigate(Destinations.MESSAGES)
+                            },
+                            colors   = ButtonDefaults.buttonColors(
+                                containerColor = mainColor,
+                                contentColor   = Color.White
+                            )0040
+                        ) {
+                            Text("Contactar al vendedor")
+                        }
+                    }
+
                 }
 
                 if (showDialog) {
