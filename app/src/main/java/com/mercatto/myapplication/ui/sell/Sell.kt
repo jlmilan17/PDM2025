@@ -1,6 +1,7 @@
 package com.mercatto.myapplication.ui.sell
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -38,6 +40,8 @@ fun SellScreen(
 
     val db = FirebaseFirestore.getInstance()
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "unknown-user"
+
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -128,64 +132,83 @@ fun SellScreen(
 
             Button(
                 onClick = {
-                    val price = productPriceText.toDoubleOrNull() ?: 0.0
+                    var price : Double = 0.0
                     val productId = UUID.randomUUID().toString()
 
-                    if (productImageUri != null) {
-                        val storageRef = FirebaseStorage.getInstance()
-                            .reference.child("product_images/$productId.jpg")
-
-                        storageRef.putFile(productImageUri!!)
-                            .addOnSuccessListener {
-                                storageRef.downloadUrl.addOnSuccessListener { uri ->
-                                    val newProduct = Product(
-                                        id = productId,
-                                        title = productTitle,
-                                        price = price,
-                                        description = productDescription,
-                                        category = selectedCategory ?: "Sin categoría",
-                                        image = uri.toString(), 
-                                        ownerId = userId
-                                    )
-
-                                    db.collection("products")
-                                        .document(newProduct.id)
-                                        .set(newProduct)
-                                        .addOnSuccessListener {
-                                            viewModel.publishProduct(newProduct)
-                                            navController.popBackStack()
-                                        }
-                                        .addOnFailureListener {
-                                            println("Error al publicar el producto: ${it.message}")
-                                        }
-                                }
-                            }
-                            .addOnFailureListener {
-                                println("Error al subir imagen: ${it.message}")
-                            }
-
-                    } else {
-                        val newProduct = Product(
-                            id = productId,
-                            title = productTitle,
-                            price = price,
-                            description = productDescription,
-                            category = selectedCategory ?: "Sin categoría",
-                            image = "",
-                            ownerId = userId
-                        )
-
-                        db.collection("products")
-                            .document(newProduct.id)
-                            .set(newProduct)
-                            .addOnSuccessListener {
-                                viewModel.publishProduct(newProduct)
-                                navController.popBackStack()
-                            }
-                            .addOnFailureListener {
-                                println("Error al publicar el producto: ${it.message}")
-                            }
+                    try {
+                        price = productPriceText.toDouble()
+                        if (price < 0) {
+                            Toast.makeText(context, "Formato de precio inválido", Toast.LENGTH_LONG)
+                                .show()
+                            return@Button
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Formato de precio inválido", Toast.LENGTH_LONG).show()
+                        return@Button
                     }
+
+                        if (productImageUri != null) {
+                            val storageRef = FirebaseStorage.getInstance()
+                                .reference.child("product_images/$productId.jpg")
+
+                            storageRef.putFile(productImageUri!!)
+                                .addOnSuccessListener {
+                                    storageRef.downloadUrl.addOnSuccessListener { uri ->
+                                        val newProduct = Product(
+                                            id = productId,
+                                            title = productTitle,
+                                            price = price,
+                                            description = productDescription,
+                                            category = selectedCategory ?: "Sin categoría",
+                                            image = uri.toString(),
+                                            ownerId = userId
+                                        )
+
+                                        db.collection("products")
+                                            .document(newProduct.id)
+                                            .set(newProduct)
+                                            .addOnSuccessListener {
+                                                viewModel.publishProduct(newProduct)
+                                                navController.popBackStack()
+                                            }
+                                            .addOnFailureListener {
+                                                println("Error al publicar el producto: ${it.message}")
+                                            }
+                                    }
+                                    Toast.makeText(context, "Producto publicado", Toast.LENGTH_LONG).show()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(context, "Error al publicar el producto", Toast.LENGTH_LONG).show()
+                                    println("Error al subir imagen: ${it.message}")
+                                }
+
+                        } else {
+                            val newProduct = Product(
+                                id = productId,
+                                title = productTitle,
+                                price = price,
+                                description = productDescription,
+                                category = selectedCategory ?: "Sin categoría",
+                                image = "",
+                                ownerId = userId
+                            )
+
+                            db.collection("products")
+                                .document(newProduct.id)
+                                .set(newProduct)
+                                .addOnSuccessListener {
+                                    viewModel.publishProduct(newProduct)
+                                    navController.popBackStack()
+                                    Toast.makeText(context, "Producto publicado", Toast.LENGTH_LONG).show()
+                                }
+                                .addOnFailureListener {
+                                    println("Error al publicar el producto: ${it.message}")
+                                }
+                        }
+
+
+
+
                 }
                 ,
                 modifier = Modifier.fillMaxWidth()
