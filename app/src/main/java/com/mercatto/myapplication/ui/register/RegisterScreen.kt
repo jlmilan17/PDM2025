@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -47,6 +49,7 @@ fun RegisterScreen(
     onNavigateBack: () -> Unit
 ) {
     val registerState by viewModel.registerState.collectAsState()
+    val mainColor = Color(14, 70, 61)
 
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -146,25 +149,31 @@ fun RegisterScreen(
             )
         }
 
-        item {
-            PasswordTextField(
-                password = password,
-                onPasswordChange = { password = it },
-                showPassword = false,
-                onToggleShowPassword = { },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+            item {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text("Ingrese una contraseña segura", style = MaterialTheme.typography.bodyMedium)
+                    PasswordTextField(
+                        password = password,
+                        onPasswordChange = { password = it },
+                        showPassword = true,
+                        onToggleShowPassword = { },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
 
-        item {
-            PasswordTextField(
-                password = confirmPass,
-                onPasswordChange = { confirmPass = it },
-                showPassword = false,
-                onToggleShowPassword = { },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+            item {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text("Confirme su contraseña", style = MaterialTheme.typography.bodyMedium)
+                    PasswordTextField(
+                        password = confirmPass,
+                        onPasswordChange = { confirmPass = it },
+                        showPassword = true,
+                        onToggleShowPassword = { },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
 
         item {
             Row(
@@ -240,7 +249,11 @@ fun RegisterScreen(
                     )
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = registerState != RegisterUiState.Loading
+                enabled = registerState != RegisterUiState.Loading,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = mainColor,
+                    contentColor = Color.White
+                )
             ) {
                 if (registerState is RegisterUiState.Loading) {
                     CircularProgressIndicator(

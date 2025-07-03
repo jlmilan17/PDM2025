@@ -37,6 +37,7 @@ fun SellScreen(
     var productImageUri by remember { mutableStateOf<Uri?>(null) }
     val categories by viewModel.categories.collectAsState()
     var expanded by remember { mutableStateOf(false) }
+    val mainColor = Color(14, 70, 61)
 
     val db = FirebaseFirestore.getInstance()
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "unknown-user"
@@ -46,10 +47,11 @@ fun SellScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Publicar artículo") },
+                title = { Text("Publicar artículo", color = Color.White) },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = mainColor),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Atrás")
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Atrás", tint = Color.White)
                     }
                 }
             )
@@ -211,7 +213,11 @@ fun SellScreen(
 
                 }
                 ,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors   = ButtonDefaults.buttonColors(
+                    containerColor = mainColor,
+                    contentColor   = Color.White
+                )
             ) {
                 Text("Publicar producto")
             }

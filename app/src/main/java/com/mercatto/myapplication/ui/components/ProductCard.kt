@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -25,8 +26,11 @@ fun ProductCard(
     onToggleFavorite: (() -> Unit)? = null,
     onClick: () -> Unit
 ) {
+    val mainColor = Color(14, 70, 61)
+
     Card(
         shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = mainColor),
         modifier = Modifier
             .padding(8.dp)
             .clickable(onClick = onClick)
@@ -54,11 +58,13 @@ fun ProductCard(
                     Text(
                         text = product.title,
                         style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1
+                        maxLines = 1,
+                        color = Color.White
                     )
                     Text(
                         text = "$${product.price.toDouble()}",
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White
                     )
                 }
 
@@ -67,7 +73,8 @@ fun ProductCard(
                         Icon(
                             imageVector = if (isFavorite) Icons.Filled.Favorite
                             else Icons.Outlined.FavoriteBorder,
-                            contentDescription = if (isFavorite) "Quitar favorito" else "Agregar a favoritos"
+                            contentDescription = if (isFavorite) "Quitar favorito" else "Agregar a favoritos",
+                            tint = Color.White
                         )
                     }
                 }
