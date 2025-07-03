@@ -73,7 +73,8 @@ fun ProductCard(
                         Icon(
                             imageVector = if (isFavorite) Icons.Filled.Favorite
                             else Icons.Outlined.FavoriteBorder,
-                            contentDescription = if (isFavorite) "Quitar favorito" else "Agregar a favoritos"
+                            contentDescription = if (isFavorite) "Quitar favorito" else "Agregar a favoritos",
+                            tint = Color.White
                         )
                     }
                 }

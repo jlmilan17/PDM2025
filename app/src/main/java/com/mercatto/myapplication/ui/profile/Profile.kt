@@ -83,7 +83,7 @@ fun ProfileScreen(
 
         Button(
             onClick = { navController.navigate(Destinations.MY_POSTS) },
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
             modifier = buttonMod,
             
         ) { Text("Mis publicaciones", color = mainColor) }
@@ -91,14 +91,14 @@ fun ProfileScreen(
 
         Button(
             onClick = { navController.navigate(Destinations.FAVORITES) },
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
             modifier = buttonMod
         ) { Text("Favoritos", color = mainColor) }
         Spacer(Modifier.height(8.dp))
 
         Button(
             onClick = { navController.navigate(Destinations.MESSAGES) },
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
             modifier = buttonMod
         ) { Text("Mensajes", color = mainColor) }
         Spacer(Modifier.height(32.dp))
@@ -106,8 +106,8 @@ fun ProfileScreen(
         Button(
             onClick = { showDialog = true },
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                contentColor = MaterialTheme.colorScheme.error
+                containerColor = Color.Gray,
+                contentColor = Color.Red.copy(alpha = 0.8f)
             ),
             modifier = buttonMod
         ) { Text("Cerrar sesión") }
