@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "543793075242",
+    "project_id": "proyectomoviles-cf441",
+    "storage_bucket": "proyectomoviles-cf441.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:543793075242:android:cf0d8b2a88985846a61f53",
+        "android_client_info": {
+          "package_name": "com.mercatto.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWIYG1CfQFWDcAgK8WG_0uCHv43_REzt4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
