@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,6 +51,16 @@ fun RegisterScreen(
 ) {
     val registerState by viewModel.registerState.collectAsState()
     val mainColor = Color(14, 70, 61)
+    val colorsConfig = OutlinedTextFieldDefaults.colors(
+        focusedContainerColor   = mainColor.copy(alpha = 0.1f),
+        unfocusedContainerColor = mainColor.copy(alpha = 0.1f),
+        focusedLabelColor       = mainColor,
+        unfocusedLabelColor     = Color.Gray,
+        focusedBorderColor      = mainColor,
+        unfocusedBorderColor    = Color.Gray,
+        focusedTextColor        = mainColor,
+        unfocusedTextColor      = mainColor
+    )
 
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -123,7 +134,8 @@ fun RegisterScreen(
                 onValueChange = { fullName = it },
                 label = { Text("Nombre completo") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = colorsConfig
             )
         }
 
@@ -134,7 +146,8 @@ fun RegisterScreen(
                 label = { Text("Correo electrónico") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = colorsConfig
             )
         }
 
@@ -145,7 +158,8 @@ fun RegisterScreen(
                 label = { Text("Teléfono") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = colorsConfig
             )
         }
 
@@ -180,7 +194,7 @@ fun RegisterScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Quiero vender productos", modifier = Modifier.weight(1f))
+                Text("Mi cuenta está vinculada a una tienda?", modifier = Modifier.weight(1f))
                 Switch(
                     checked = isSeller,
                     onCheckedChange = { isSeller = it }
@@ -195,7 +209,8 @@ fun RegisterScreen(
                     onValueChange = { storeName = it },
                     label = { Text("Nombre de la tienda") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = colorsConfig
                 )
             }
 
@@ -206,7 +221,8 @@ fun RegisterScreen(
                     label = { Text("Teléfono de contacto") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = colorsConfig
                 )
             }
 
@@ -216,7 +232,8 @@ fun RegisterScreen(
                     onValueChange = { storeLocation = it },
                     label = { Text("Ubicación") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = colorsConfig
                 )
             }
 

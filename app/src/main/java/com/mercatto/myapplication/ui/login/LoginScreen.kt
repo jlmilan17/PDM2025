@@ -76,7 +76,7 @@ fun LoginScreen(
                 showError = false
                 viewModel.resetLoginState()
             }
-            else -> { /* Idle o Loading: nada */ }
+            else -> { }
         }
     }
 
@@ -129,7 +129,8 @@ fun LoginScreen(
             onPasswordChange     = { password = it },
             showPassword         = showPassword,
             onToggleShowPassword = { showPassword = !showPassword },
-            modifier             = Modifier.fillMaxWidth()
+            modifier             = Modifier.fillMaxWidth(),
+
         )
 
         Spacer(Modifier.height(24.dp))

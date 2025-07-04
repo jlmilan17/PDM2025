@@ -32,7 +32,7 @@ fun CategoryItem(
         Surface(
             shape = CircleShape,
             color = if (selected)
-                mainColor.copy(alpha = 0.8f)
+                Color.White
             else
                 mainColor,
             modifier = Modifier
@@ -43,7 +43,10 @@ fun CategoryItem(
                 Icon(
                     imageVector   = Icons.Filled.Star,
                     contentDescription = name,
-                    tint = Color.White
+                    tint = if (selected)
+                        mainColor
+                    else
+                        Color.White.copy(alpha = 0.5f),
                 )
             }
         }
