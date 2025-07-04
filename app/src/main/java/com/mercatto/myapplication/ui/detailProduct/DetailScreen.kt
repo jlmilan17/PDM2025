@@ -102,7 +102,7 @@ fun DetailScreen(
                             colors   = ButtonDefaults.buttonColors(
                                 containerColor = mainColor,
                                 contentColor   = Color.White
-                            )0040
+                            )
                         ) {
                             Text("Contactar al vendedor")
                         }
