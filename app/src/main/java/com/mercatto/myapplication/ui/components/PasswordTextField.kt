@@ -27,13 +27,13 @@ fun PasswordTextField(
         label = {
             Text(
                 text = "Contraseña",
-                color = Color.Gray // mayor contraste
+                color = Color.Gray
             )
         },
         placeholder = {
             Text(
                 text = "Contraseña",
-                color = Color.Gray // mayor contraste
+                color = Color.Gray
             )
         },
         singleLine = true,

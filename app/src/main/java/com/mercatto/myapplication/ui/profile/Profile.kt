@@ -83,31 +83,40 @@ fun ProfileScreen(
 
         Button(
             onClick = { navController.navigate(Destinations.MY_POSTS) },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
+            colors   = ButtonDefaults.buttonColors(
+                containerColor = mainColor,
+                contentColor   = Color.White
+            ),
             modifier = buttonMod,
             
-        ) { Text("Mis publicaciones", color = mainColor) }
+        ) { Text("Mis publicaciones", color = Color.White) }
         Spacer(Modifier.height(8.dp))
 
         Button(
             onClick = { navController.navigate(Destinations.FAVORITES) },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
+            colors   = ButtonDefaults.buttonColors(
+                containerColor = mainColor,
+                contentColor   = Color.White
+            ),
             modifier = buttonMod
-        ) { Text("Favoritos", color = mainColor) }
+        ) { Text("Favoritos", color = Color.White) }
         Spacer(Modifier.height(8.dp))
 
         Button(
             onClick = { navController.navigate(Destinations.MESSAGES) },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
+            colors   = ButtonDefaults.buttonColors(
+                containerColor = mainColor,
+                contentColor   = Color.White
+            ),
             modifier = buttonMod
-        ) { Text("Mensajes", color = mainColor) }
+        ) { Text("Mensajes", color = Color.White) }
         Spacer(Modifier.height(32.dp))
 
         Button(
             onClick = { showDialog = true },
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Gray,
-                contentColor = Color.Red.copy(alpha = 0.8f)
+                containerColor = Color.Red,
+                contentColor = Color.White
             ),
             modifier = buttonMod
         ) { Text("Cerrar sesión") }
