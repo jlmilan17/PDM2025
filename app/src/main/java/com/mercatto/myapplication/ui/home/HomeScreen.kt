@@ -46,7 +46,7 @@ fun HomeScreen(
             ) {
                 item {
                     CategoryItem(
-                        name = "Todas",
+                        name = "All categories",
                         selected = selectedCategory == null,
                         onClick = { viewModel.selectCategory(null) }
                     )
