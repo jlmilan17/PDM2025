@@ -54,7 +54,7 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var showPassword by remember { mutableStateOf(false) }
 
-    // Control local del mensaje de error
+
     var showError by remember { mutableStateOf(false) }
     var errorMsg by remember { mutableStateOf("") }
 
@@ -67,11 +67,11 @@ fun LoginScreen(
                 viewModel.resetLoginState()
             }
             is LoginUiState.Error -> {
-                // Capturamos el mensaje y lo mostramos
+
                 errorMsg = (loginState as LoginUiState.Error).message
                 showError = true
 
-                // Tras 3 segundos lo ocultamos y limpiamos el estado
+
                 delay(3000)
                 showError = false
                 viewModel.resetLoginState()
@@ -159,7 +159,7 @@ fun LoginScreen(
             Text("¿No tienes una cuenta? Regístrate", color = mainColor)
         }
 
-        // Aquí el Text de error aparece sólo cuando showError == true
+
         if (showError) {
             Spacer(Modifier.height(12.dp))
             Text(
